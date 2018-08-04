@@ -1,26 +1,29 @@
-#!/bin/sh
-days=( [0]="MON" [1]="TUE" [2]="WED" [3]="THUR" [4]="FRI" [5]="SAT" [6]="SUN")
-for ((i=0;i<7;i++))
-do
-	echo 'Enter Start Time..'
-	read starttime
-	echo 'Enter End Time'
-	read endtime
+#!/bin/bash
+#AWS ADVANCE ASSIGNMENT 2 : Automate the process of setting up passwordless between two AWS EC2 instances.
+echo "Please enter the Public IP of EC2 instance 1"
+read ip1
+echo "Please enter the Public IP of EC2 instance 2"
+read ip2
+echo "Please mention the path to the private key to instance1"
+read key1
+echo "Please mention the path to the private key to instance2"
+read key2
 
-	aws events put-rule \
-	--name ${days[i]}-start-rule \
-	--schedule-expression "cron(0 ${starttime} ? * ${days[i]} *)" \
-	--region $REGION
+SCRIPT1="ssh-keygen -f .ssh/id_rsa -t rsa -N ''"
+echo "Generating public keys in both the instances"
+ssh -i $key1 ec2-user@$ip1 "${SCRIPT1}"
+ssh -i $key2 ec2-user@$ip2 "${SCRIPT1}"
+scp -i $key1 ec2-user@$ip1:.ssh/id_rsa.pub pub1.txt
+scp -i $key2 ec2-user@$ip2:.ssh/id_rsa.pub pub2.txt
 
-	aws events put-rule \
-	--name ${days[i]}-stop-rule \
-	--schedule-expression "cron(0 ${endtime} ? * ${days[i]} *)" \
-	--region $REGION
-done
+pub1=`cat pub1.txt`
+pub2=`cat pub2.txt`
+echo "Connecting the two instances"
+S1="echo $pub2 >> .ssh/authorized_keys;"
+S2="echo $pub1 >> .ssh/authorized_keys;"
+ssh -i $key1 ec2-user@$ip1 "${S1}"
+ssh -i $key2 ec2-user@$ip2 "${S2}"
 
-aws events disable-rule \
---name start-rule \
---region $REGION
-aws events disable-rule \
---name stop-rule \
---region $REGION
+echo "Now the instances can connect to each other password less"
+rm pub1.txt
+rm pub2.txt
