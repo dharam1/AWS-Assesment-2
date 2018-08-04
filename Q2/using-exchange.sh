@@ -9,7 +9,7 @@ read key1
 echo "Please mention the path to the private key to instance2"
 read key2
 
-SCRIPT1="ssh-keygen -f .ssh/id_rsa -t rsa -N ''"
+SCRIPT1="ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''"
 echo "Generating public keys in both the instances"
 ssh -i $key1 ec2-user@$ip1 "${SCRIPT1}"
 ssh -i $key2 ec2-user@$ip2 "${SCRIPT1}"
@@ -19,8 +19,8 @@ scp -i $key2 ec2-user@$ip2:.ssh/id_rsa.pub pub2.txt
 pub1=`cat pub1.txt`
 pub2=`cat pub2.txt`
 echo "Connecting the two instances"
-S1="echo $pub2 >> .ssh/authorized_keys;"
-S2="echo $pub1 >> .ssh/authorized_keys;"
+S1="echo $pub2 >> ~/.ssh/authorized_keys;"
+S2="echo $pub1 >> ~/.ssh/authorized_keys;"
 ssh -i $key1 ec2-user@$ip1 "${S1}"
 ssh -i $key2 ec2-user@$ip2 "${S2}"
 
