@@ -12,8 +12,11 @@ echo "Set up done..."
 
 #Connection from local to 1st instance
 #-A flag for agent forwarding
-#ssh -A instance1@ip 
+#ssh -A instance1-user@ip 
 
 #connection from 1st to 2nd instance
 #here no use of -A flag since 2nd instance is the last one to connect to
-#ssh instance2@ip 
+#ssh instance2-user@ip 
+
+#Connect 1st instance to 2nd instance without using local
+#ssh instance2-user@ip
