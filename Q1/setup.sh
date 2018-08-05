@@ -19,11 +19,10 @@ aws sqs set-queue-attributes \
 #creating key pair
 aws ec2 create-key-pair --key-name CRRR --query 'KeyMaterial' --output text > CRRR.pem
 file=CRRR.pem
-chmod 400 $files
+chmod 400 $file
 
 #download files from s3 bucket
 aws s3 cp s3://dharam-code/CRR . --recursive
-
 
 #create Instance
 aws ec2 run-instances --iam-instance-profile Name=FullAccess --image-id ami-b70554c8 --count 1 --subnet-id subnet-de0385f2 --instance-type t2.micro --key-name CRRR --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=CRinstance}]" --region us-east-1

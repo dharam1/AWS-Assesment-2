@@ -13,6 +13,13 @@ echo "Your bucket has replicated in Mumbai region with name ${destbucket}"
 
 aws s3 mb s3://${destbucket} --region $region
 
+queueurl=$(aws sqs get-queue-url --queue-name general-queue \
+--query QueueUrl --output text)
+
+#getting queuearn
+queuearn=$(aws sqs get-queue-attributes \
+--queue-url $queueurl --attribute-names All --query Attributes.QueueArn --output text)
+
 echo "{
     \"QueueConfigurations\": [
         {
