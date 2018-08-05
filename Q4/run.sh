@@ -1,4 +1,5 @@
 #!/bin/sh
+REGION='us-east-1'
 days=( [0]="MON" [1]="TUE" [2]="WED" [3]="THUR" [4]="FRI" [5]="SAT" [6]="SUN")
 for ((i=0;i<7;i++))
 do
